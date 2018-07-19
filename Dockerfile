@@ -7,8 +7,8 @@ RUN apk add curl \
 
 RUN touch foo.txt
 
-RUN touch foobar.txt
-RUN echo "baz" > /foobar.txt
+RUN touch foobar.txt \
+  && echo "baz" > /foobar.txt
 
 RUN echo 'http://dl-cdn.alpinelinux.org/alpine/v3.8/edge' >> /etc/apk/repositories
 
