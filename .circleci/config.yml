@@ -1,0 +1,42 @@
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: alpine:3.8
+
+version: 2
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: apk add --update make curl
+      - run:
+          name: Install container-structure-test
+          command: |
+            curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
+            chmod +x container-structure-test-linux-amd64
+            mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+      - setup_remote_docker
+
+      - run:
+          name: Install Docker client
+          command: |
+            set -x
+            VER="17.03.0-ce"
+            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            mv /tmp/docker/* /usr/bin
+      - run:
+          name: "run test"
+          command: |
+            docker build -t local/test_image .
+            container-structure-test test --image local/test_image --config container_test.yaml
+
+
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build

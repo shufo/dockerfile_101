@@ -1,0 +1,61 @@
+schemaVersion: '2.0.0' # Make sure to test the latest schema version
+# command tests
+commandTests:
+- name: 'apk list'
+  command: 'apk'
+  args: ['list']
+  excludedError: ['.*FAIL.*']
+  expectedOutput: ['.*zlib.*']
+- name: 'path value'
+  command: 'sh'
+  args: ['-c', 'echo $PATH']
+  expectedOutput: ['/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt']
+- name: "curl command is installed"
+  command: "which"
+  args: ["curl"]
+  expectedOutput: ["/usr/bin/curl"]
+- name: "curl command is installed"
+  command: "which"
+  args: ["curl"]
+  expectedOutput: ["/usr/bin/curl"]
+- name: "drill command is installed"
+  command: "which"
+  args: ["drill"]
+  expectedOutput: ["/usr/bin/drill"]
+
+# file content tests
+fileContentTests:
+- name: 'alpine-release'
+  expectedContents: ['3.8.0']
+  path: '/etc/alpine-release'
+- name: 'foobar.txt'
+  expectedContents: ['baz']
+  path: '/foobar.txt'
+- name: 'edge repository is exists in apk repositories'
+  expectedContents: ['.*http\:\/\/dl-cdn\.alpinelinux\.org\/alpine\/v3\.8\/edge*']
+  path: '/etc/apk/repositories'
+
+# file existence tests
+fileExistenceTests:
+- name: 'Root'
+  path: '/'
+  shouldExist: true
+  uid: 0
+  gid: 0
+- name: 'alpine-release'
+  path: '/etc/alpine-release'
+  shouldExist: true
+- name: 'foo.txt'
+  path: '/foo.txt'
+  shouldExist: true
+
+# metadata
+metadataTest:
+  env:
+    - key: foo
+      value: baz
+  exposedPorts: ["8080"]
+  volumes: ["/bar"]
+  entrypoint: []
+  cmd: ["/bin/sh"]
+  workdir: "/app"
