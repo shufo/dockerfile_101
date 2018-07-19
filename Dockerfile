@@ -10,7 +10,8 @@ RUN touch foo.txt
 RUN touch foobar.txt \
   && echo "baz" > /foobar.txt
 
-RUN echo 'http://dl-cdn.alpinelinux.org/alpine/v3.8/edge' >> /etc/apk/repositories
+RUN touch /etc/apk/repositories \
+  && echo http://dl-cdn.alpinelinux.org/alpine/v3.8/edge > /etc/apk/repositories
 
 EXPOSE 8080
 WORKDIR /app
